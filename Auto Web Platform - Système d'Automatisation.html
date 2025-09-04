@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Rapport d'analyse technique de la plateforme Auto Web - Système d'automatisation des tâches email et browser" />
+    <meta name="author" content="Équipe Technique" />
+    <meta name="keywords"
+        content="automation, email, browser profiles, Django, React, Next.js, web automation, Yahoo, Gmail" />
+    <title>Rapport d'Analyse - Auto Web Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+        :root {
+            --primary-color: #0ea5e9;
+            --secondary-color: #10b981;
+            --text-color: #1e293b;
+            --background-color: #ffffff;
+            --accent-color: #f59e0b;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --warning-color: #eab308;
+            --info-color: #06b6d4;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                "Inter",
+                -apple-system,
+                BlinkMacSystemFont,
+                sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            font-size: 14px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: white;
+            box-shadow: 0 10px 40px var(--shadow-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg,
+                    var(--primary-color),
+                    var(--secondary-color),
+                    var(--accent-color));
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .meta-info-container {
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+
+        .meta-info-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .meta-info-container h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .meta-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .meta-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .meta-item strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .meta-item span {
+            text-align: right;
+            color: var(--text-color);
+        }
+
+        .executive-summary {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .executive-summary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 18px;
+            margin: 20px 0 10px;
+        }
+
+        h3 {
+            color: var(--text-color);
+            font-size: 16px;
+            margin: 15px 0 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .feature-card:hover::before {
+            width: 8px;
+        }
+
+        .feature-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card h4 i {
+            font-size: 20px;
+        }
+
+        .feature-with-image {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-with-image:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px var(--shadow-color);
+        }
+
+        .image-container {
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .image-placeholder {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .image-placeholder i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #9ca3af;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .code-header {
+            background: #343a40;
+            color: white;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        pre {
+            margin: 0;
+            padding: 20px;
+            background: #ffffff;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left: 4px solid var(--info-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid var(--warning-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid var(--success-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .conclusion {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid var(--success-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            margin: 40px 0;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .code-block {
+                page-break-inside: avoid;
+            }
+
+            .feature-grid {
+                page-break-inside: avoid;
+            }
+
+            .table-container {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Rapport d'Analyse Technique</h1>
+            <h2>Auto Web Platform - Système d'Automatisation</h2>
+        </div>
+
+        <div class="meta-info-container">
+            <h3>INFORMATIONS DU DOCUMENT</h3>
+            <div class="meta-info">
+                <div class="meta-item">
+                    <strong>Préparé pour :</strong>
+                    <span>Web Media Network</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Préparé par :</strong>
+                    <span>MOSTAFA BENMOUSA<br />(WMNW)</span>
+                </div>
+                <div class="meta-item full-width">
+                    <strong>Encadré par :</strong>
+                    <span>Rachid AMIRATE (Manager Junior)<br />Zakaria SERBOUT (Team
+                        Leader)</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Période :</strong>
+                    <span>Intégration</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Téléphone :</strong>
+                    <span>+212 622715935</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Email :</strong>
+                    <span>benmousamostafa03@gmail.com</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Année :</strong>
+                    <span>2025</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="executive-summary">
+            <h2>RÉSUMÉ EXÉCUTIF</h2>
+            <p>
+                Web Media Network, leader dans le domaine du marketing digital, a
+                développé une suite complète d'outils marketing web pour optimiser les
+                processus de marketing digital. Ce rapport présente l'analyse technique de Auto Web Platform - Système
+                d'Automatisation, une solution innovante
+                développée pour améliorer l'efficacité des équipes marketing et
+                renforcer la position concurrentielle du groupe.
+            </p>
+            <p>
+                Auto Web est une plateforme d'automatisation web full-stack conçue pour orchestrer et gérer des tâches
+                d'automatisation sur des profils email multiples. Développée durant ma période d'intégration, cette
+                solution innovante permet d'exécuter des scripts Python d'automatisation pour Yahoo et Gmail de manière
+                parallèle ou séquentielle, avec un suivi en temps réel de l'exécution et des logs détaillés.
+            </p>
+            <p>
+                La plateforme combine une API REST robuste développée avec Django et une interface utilisateur moderne
+                construite avec Next.js, offrant une expérience complète de gestion des automatisations web. Ce projet
+                démontre l'application pratique de technologies modernes pour résoudre des problèmes complexes
+                d'automatisation à grande échelle.
+            </p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>1. CONTEXTE ET OBJECTIFS</h1>
+
+        <h2>1.1 Présentation du Projet</h2>
+        <p>
+            Auto Web est un tableau de bord d'automatisation web qui permet de gérer des profils (comptes email/web),
+            définir des scénarios (scripts Python), et exécuter des tâches qui lancent ces scripts pour des profils
+            sélectionnés. Le système suit l'avancement, les journaux (logs) et les résultats de chaque exécution.
+        </p>
+
+        <h2>1.2 Objectifs du Projet</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><i class="fas fa-users"></i> Gestion Multi-Profils</h4>
+                <p>
+                    Gérer efficacement de multiples profils email avec leurs configurations spécifiques (proxy, email de
+                    récupération, etc.)
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-cogs"></i> Orchestration</h4>
+                <p>
+                    Orchestrer l'exécution de scripts d'automatisation de manière parallèle ou séquentielle selon les
+                    besoins.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-chart-line"></i> Monitoring</h4>
+                <p>
+                    Suivre en temps réel l'exécution des tâches avec des logs détaillés et des statuts précis.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-plug"></i> Extensibilité</h4>
+                <p>
+                    Architecture modulaire permettant l'ajout facile de nouveaux scripts et fournisseurs email.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>2. ARCHITECTURE TECHNIQUE</h1>
+
+        <h2>2.1 Vue d'Ensemble du Système</h2>
+        <p>
+            La plateforme adopte une architecture monorepo séparant clairement le backend (API Django) du frontend
+            (application Next.js). Cette séparation permet un développement indépendant et une maintenance facilitée de
+            chaque composant.
+        </p>
+
+        <h2>2.2 Stack Technologique</h2>
+
+        <h3>Technologies Backend</h3>
+        <div class="code-block">
+            <div class="code-header">Backend Technologies</div>
+            <pre><code class="language-python"># Stack Backend Principal
+Django==5.2.4                 # Framework web Python
+djangorestframework==3.16.0  # API REST Framework
+django-cors-headers==4.7.0   # Gestion CORS
+psycopg==3.2.9               # PostgreSQL adapter
+psutil                       # Gestion des processus
+subprocess                   # Exécution des scripts
+selenium                     # Automatisation navigateur (WebDriver)
+webdriver-manager            # Gestion simplifiée des pilotes (ex. ChromeDriver)
+
+# Base de données
+PostgreSQL                   # SGBD principal</code></pre>
+        </div>
+
+        <h3>Technologies Frontend</h3>
+        <div class="code-block">
+            <div class="code-header">Frontend Technologies</div>
+            <pre><code class="language-javascript">// Stack Frontend Principal
+Next.js 15         // Framework React
+React 19           // Bibliothèque UI
+TypeScript         // Type safety
+Redux Toolkit      // Gestion d'état client
+React Query        // Gestion données serveur
+TailwindCSS 4      // Framework CSS
+Radix UI           // Composants UI headless
+shadcn/ui          // Bibliothèque de composants sur Radix + Tailwind
+lucide-react       // Icônes</code></pre>
+        </div>
+
+        <h2>2.3 Structure du Projet</h2>
+
+        <div class="code-block">
+            <div class="code-header">Architecture Monorepo</div>
+            <pre><code>auto-web/
+├── backend/                      # API Django + Scripts
+│   ├── apps/                    # Applications Django
+│   │   ├── profiles/           # Gestion des profils
+│   │   ├── scenarios/          # Définition des scénarios
+│   │   └── tasks/              # Exécution et suivi
+│   ├── scripts/                # Scripts d'automatisation
+│   │   ├── yahoo/              # Scripts Yahoo
+│   │   └── gmail/              # Scripts Gmail
+│   └── browser_profiles/       # Dossiers navigateur
+│
+└── frontend/                    # Application Next.js
+    ├── src/app/                # Pages App Router
+    │   ├── profiles/           # Gestion CRUD profils
+    │   ├── run/                # Lancement des tâches
+    │   └── tasks/              # Suivi des exécutions
+    ├── components/             # Composants réutilisables
+    └── services/               # Appels API</code></pre>
+        </div>
+
+        <h2>2.4 Architecture détaillée</h2>
+
+        <h3>Backend (Django)</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><i class="fas fa-server"></i> Structure des Applications</h4>
+                <ul>
+                    <li><strong>Profiles</strong> : Gestion des profils utilisateurs et configurations</li>
+                    <li><strong>Scénarios</strong> : Définition et gestion des workflows d'automatisation</li>
+                    <li><strong>Tâches</strong> : Orchestration et suivi des exécutions</li>
+                    <li><strong>Scripts</strong> : Bibliothèque de scripts d'automatisation</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4><i class="fas fa-database"></i> Modèle de Données</h4>
+                <ul>
+                    <li>Profile : informations utilisateur et préférences</li>
+                    <li>Scenario : <code>name</code>, <code>isp</code>, <code>script_path</code>, <code>args</code></li>
+                    <li>Task : statut, PID, timestamps, résultat</li>
+                    <li>TaskLog : journalisation des activités</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>2.5 Flux de Données</h2>
+        <h3>Cycle de Vie d'une Tâche</h3>
+        <ol class="process-steps">
+            <li>Création de la tâche via l'API</li>
+            <li>Validation et planification</li>
+            <li>Exécution du script Selenium associé</li>
+            <li>Mise à jour en temps réel</li>
+            <li>Finalisation et stockage des résultats</li>
+        </ol>
+
+        <div class="code-block">
+            <div class="code-header">Exemple de flux API</div>
+            <pre><code class="language-http">// Création d'une tâche
+POST /api/tasks/
+{
+  "scenario_id": 1,
+  "profile_ids": [1, 2, 3],
+  "parameters": {"param1": "value1"}
+}
+
+// Suivi de l'exécution
+GET /api/tasks/123/status
+
+// Récupération des logs
+GET /api/tasks/123/logs</code></pre>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>3. MODULES PRINCIPAUX</h1>
+
+        <div class="feature-with-image">
+            <h3>Vue d'ensemble des modules</h3>
+            <div class="image-container">
+                <img src="../docs/diagramme_modules.png" alt="Diagramme des modules (Profiles, Scenarios, Tasks)"
+                    style="max-width:100%; height:auto; display:block;" />
+            </div>
+        </div>
+
+        <h2>3.1 Module Profiles</h2>
+        <div class="feature-with-image">
+            <h3>Gestion des Profils Email</h3>
+            <p>Interface complète de gestion CRUD des profils avec filtrage, pagination et actions groupées.</p>
+
+            <h4>Fonctionnalités clés :</h4>
+            <ul>
+                <li>Création/modification/suppression de profils</li>
+                <li>Configuration proxy et email de récupération</li>
+                <li>Gestion automatique des dossiers navigateur</li>
+                <li>Import/export CSV en masse</li>
+                <li>Statuts : Active, Inactive, Idle</li>
+            </ul>
+
+            <h4>Champs clés (référence modèle)</h4>
+            <ul>
+                <li><code>email</code>, <code>password?</code>, <code>status</code> (<code>active|inactive|idle</code>)
+                </li>
+                <li><code>recovery_email?</code>, <code>new_password?</code>, <code>is_password_changed</code></li>
+                <li><code>new_email?</code>, <code>is_recovery_email_changed</code>, <code>proxy?</code></li>
+                <li><code>created_at</code>, <code>updated_at</code></li>
+            </ul>
+        </div>
+
+        <h2>3.2 Module Scenarios</h2>
+
+        <div class="feature-with-image">
+            <h3>Définition des Scénarios d'Automatisation</h3>
+            <p>Catalogue des scripts disponibles avec leurs paramètres configurables.</p>
+            <h4>Scripts Yahoo disponibles :</h4>
+            <ul>
+                <li><strong>login.py</strong> : Connexion au compte</li>
+                <li><strong>change_password.py</strong> : Modification du mot de passe</li>
+                <li><strong>change_recovery.py</strong> : Mise à jour email de récupération</li>
+                <li><strong>not_spam.py</strong> : Marquage emails non-spam</li>
+                <li><strong>inbox_actions.py</strong> : Actions sur la boîte de réception</li>
+                <li><strong>check.py</strong> : Vérification du statut</li>
+            </ul>
+
+            <h4>Champs clés (référence modèle)</h4>
+            <ul>
+                <li><code>name</code>, <code>script_path</code> (unique), <code>description</code></li>
+                <li><code>isp</code> (<code>yahoo|gmail</code>), <code>sub_scenario?</code></li>
+                <li><code>args</code> (schéma détaillé) et <code>extra_args</code> (compatibilité)</li>
+                <li><code>created_at</code>, <code>updated_at</code></li>
+            </ul>
+        </div>
+
+        <h2>3.3 Module Tasks</h2>
+
+        <div class="feature-with-image">
+            <h3>Exécution et Monitoring des Tâches</h3>
+            <p>Interface de lancement et suivi en temps réel des automatisations.</p>
+
+            <h4>Caractéristiques :</h4>
+            <ul>
+                <li>Exécution parallèle ou séquentielle</li>
+                <li>Suivi PID et gestion des timeouts</li>
+                <li>Logs détaillés par tâche</li>
+                <li>Statuts : Pending, Queued, Running, Completed, Failed, Stopped</li>
+                <li>Arrêt manuel des tâches en cours</li>
+            </ul>
+
+            <h4>Champs clés (référence modèle)</h4>
+            <ul>
+                <li><code>profile</code>, <code>scenario</code>, <code>status</code>
+                    (<code>pending|queued|running|completed|failed|stopped</code>)</li>
+                <li><code>pid?</code>, <code>started_at?</code>, <code>completed_at?</code>, <code>final_result?</code>,
+                    <code>result</code>
+                </li>
+                <li><code>error_message?</code>, <code>created_at</code>, <code>updated_at</code></li>
+                <li>Journaux: modèle <code>TaskLog</code> avec <code>message</code>, <code>level</code>,
+                    <code>created_at</code>
+                </li>
+            </ul>
+        </div>
+
+        <div class="feature-with-image">
+            <h3>Tableau de Bord des Tâches</h3>
+            <p>Vue d'ensemble des tâches avec rafraîchissement automatique.</p>
+
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>4. API REST</h1>
+
+        <h2>4.1 Endpoints Principaux</h2>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Méthode</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/api/profiles/</td>
+                        <td>GET, POST</td>
+                        <td>Liste et création de profils</td>
+                    </tr>
+                    <tr>
+                        <td>/api/profiles/{id}/</td>
+                        <td>GET, PUT, DELETE</td>
+                        <td>Détails, modification et suppression</td>
+                    </tr>
+                    <tr>
+                        <td>/api/scenarios/</td>
+                        <td>GET, POST</td>
+                        <td>Liste et création de scénarios</td>
+                    </tr>
+                    <tr>
+                        <td>/api/tasks/</td>
+                        <td>GET, POST</td>
+                        <td>Liste et création de tâches</td>
+                    </tr>
+                    <tr>
+                        <td>/api/tasks/run/</td>
+                        <td>POST</td>
+                        <td>Exécution de scripts sur profils</td>
+                    </tr>
+                    <tr>
+                        <td>/api/tasks/stop/{id}/</td>
+                        <td>POST</td>
+                        <td>Arrêt d'une tâche en cours</td>
+                    </tr>
+                    <tr>
+                        <td>/api/tasks/{id}/logs/</td>
+                        <td>GET</td>
+                        <td>Récupération des logs</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4.2 Format de Réponse</h2>
+
+        <div class="code-block">
+            <div class="code-header">Exemple de Réponse API</div>
+            <pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "id": 1,
+    "profile": {
+      "id": 5,
+      "email": "user@yahoo.com",
+      "status": "active"
+    },
+    "scenario": {
+      "id": 2,
+      "name": "Yahoo Login",
+      "script_path": "yahoo/login.py"
+    },
+    "status": "completed",
+    "started_at": "2025-01-15T10:30:00Z",
+    "completed_at": "2025-01-15T10:31:45Z",
+    "result": {
+      "success": true,
+      "message": "Login successful"
+    }
+  }
+}</code></pre>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>5. SCRIPTS D'AUTOMATISATION</h1>
+
+        <h2>5.1 Architecture des Scripts</h2>
+
+        <div class="info-box">
+            <h4>Principe de Fonctionnement</h4>
+            <p>Les scripts Python sont exécutés via subprocess avec des arguments standardisés :</p>
+            <ul>
+                <li><strong>--profile_id</strong> : Identifiant du profil à utiliser</li>
+                <li><strong>--task_id</strong> : Identifiant de la tâche pour le logging</li>
+                <li><strong>--proxy</strong> : Activation du proxy si configuré</li>
+                <li><strong>Arguments personnalisés</strong> : Selon le scénario</li>
+            </ul>
+        </div>
+
+        <h2>5.2 Exemple d'Implémentation</h2>
+
+        <div class="code-block">
+            <div class="code-header">yahoo/login.py - Extrait</div>
+            <pre><code class="language-python">import argparse
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--profile_id', type=int, required=True)
+    parser.add_argument('--task_id', type=int)
+    parser.add_argument('--proxy', action='store_true')
+    args = parser.parse_args()
+    
+    # Configuration du navigateur
+    options = webdriver.ChromeOptions()
+    if args.proxy:
+        # Configuration proxy
+        pass
+    
+    # Chargement du profil navigateur
+    profile_path = f"browser_profiles/{args.profile_id}"
+    options.add_argument(f"user-data-dir={profile_path}")
+    
+    driver = webdriver.Chrome(options=options)
+    
+    try:
+        # Logique de connexion Yahoo
+        driver.get("https://login.yahoo.com")
+        # ... suite de l'automatisation
+        
+        return {"success": True, "message": "Login successful"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    main()</code></pre>
+        </div>
+        <div class="info-box">
+            <h4>Intégration API ↔ Scripts Selenium</h4>
+            <ul>
+                <li><strong>Déclaration</strong> : chaque scénario référence un <code>script_path</code> (ex.
+                    <code>yahoo/login.py</code>).
+                </li>
+                <li><strong>Exécution</strong> : l'endpoint <code>POST /api/tasks/run/</code> lance le script via
+                    <code>subprocess</code> avec les arguments du scénario.
+                </li>
+                <li><strong>Surveillance</strong> : PID, timeouts et logs (<code>TaskLog</code>) gérés côté backend.
+                </li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>6. INTERFACE UTILISATEUR</h1>
+
+        <h2>6.1 Architecture Frontend</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><i class="fas fa-layer-group"></i> Next.js App Router</h4>
+                <p>
+                    Utilisation du nouveau App Router pour une navigation optimisée et des composants serveur/client.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-database"></i> État Hybride</h4>
+                <p>
+                    Redux Toolkit pour l'état client local et React Query pour la synchronisation avec le serveur.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-paint-brush"></i> Design System</h4>
+                <p>
+                    Composants shadcn/ui (basés sur Radix UI) stylés avec Tailwind CSS pour une interface cohérente et
+                    accessible.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-sync"></i> Temps Réel</h4>
+                <p>
+                    Rafraîchissement périodique des données et mise à jour automatique des statuts.
+                </p>
+            </div>
+        </div>
+
+        <h2>6.2 Pages Principales</h2>
+
+        <div class="feature-with-image">
+            <h3>Page Profiles - Gestion des Profils</h3>
+            <div class="image-container">
+                <img src="images/profiles.png" alt="Capture : Page Profiles"
+                    style="max-width:100%; height:auto; display:block;" />
+            </div>
+            <small>Figure 2 — Page Profiles : recherche, filtres, actions groupées et pagination.</small>
+            <p>Gérer tous les profils avec sélection multiple, export CSV, colonnes configurables et actions rapides.
+            </p>
+        </div>
+
+        <div class="feature-with-image">
+            <h3>Page Run - Lancement des Automatisations</h3>
+            <div class="image-container">
+                <img src="images/run.png" style="max-width:100%; height:auto; display:block;" />
+            </div>
+            <small>Figure 3 — Page Run : sélection des profils et scénarios, paramètres d’exécution.</small>
+            <p>Interface intuitive permettant de :</p>
+            <ul>
+                <li>Sélectionner les profils cibles</li>
+                <li>Choisir le scénario à exécuter</li>
+                <li>Configurer le mode d'exécution (parallèle/séquentiel)</li>
+                <li>Définir les paramètres spécifiques au script</li>
+            </ul>
+        </div>
+
+        <div class="feature-with-image">
+            <h3>Page Tasks - Monitoring</h3>
+            <div class="image-container">
+                <img src="images/task.png" alt="Capture : Dashboard des tâches et logs"
+                    style="max-width:100%; height:auto; display:block;" />
+            </div>
+            <small>Figure 4 — Monitoring des tâches et consultation des logs.</small>
+            <p>Fonctionnalités de monitoring :</p>
+            <ul>
+                <li>Vue temps réel des tâches en cours</li>
+                <li>Consultation des logs détaillés</li>
+                <li>Filtrage par statut, date, profil</li>
+                <li>Actions d'arrêt et de relance</li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>7. GESTION DES DONNÉES</h1>
+
+        <h2>7.1 Base de Données</h2>
+
+        <div class="code-block">
+            <div class="code-header">Modèles Principaux</div>
+            <pre><code class="language-python"># Profile Model
+class Profile(models.Model):
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=255)
+    proxy = models.CharField(max_length=255, blank=True)
+    recovery_email = models.EmailField(blank=True)
+    status = models.CharField(choices=STATUS_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+# Scenario Model
+class Scenario(models.Model):
+    name = models.CharField(max_length=255)
+    isp = models.CharField(max_length=50)
+    script_path = models.CharField(max_length=500)
+    args = models.JSONField(default=dict)
+    
+# Task Model  
+class Task(models.Model):
+    profile = models.ForeignKey(Profile)
+    scenario = models.ForeignKey(Scenario)
+    status = models.CharField(choices=TASK_STATUS_CHOICES)
+    pid = models.IntegerField(null=True)
+    started_at = models.DateTimeField()
+    completed_at = models.DateTimeField(null=True)
+    result = models.JSONField(null=True)</code></pre>
+        </div>
+
+        <h2>7.2 Gestion des Dossiers Navigateur</h2>
+
+        <div class="warning-box">
+            <h4>Isolation des Profils</h4>
+            <p>Chaque profil dispose de son propre dossier navigateur isolé dans
+                <code>browser_profiles/{profile_id}/</code>
+            </p>
+            <ul>
+                <li>Cookies et sessions persistantes</li>
+                <li>Préférences et extensions</li>
+                <li>Cache et données locales</li>
+                <li>Suppression automatique à la suppression du profil</li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>8. SÉCURITÉ ET PERFORMANCES</h1>
+
+        <h2>8.1 Mesures de Sécurité</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><i class="fas fa-shield-alt"></i> CORS Configuration</h4>
+                <p>
+                    Configuration stricte des origines autorisées pour l'API avec django-cors-headers.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-lock"></i> Isolation des Processus</h4>
+                <p>
+                    Chaque script s'exécute dans un processus isolé avec gestion des timeouts.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-user-shield"></i> Validation des Données</h4>
+                <p>
+                    Validation stricte des entrées utilisateur et des arguments de scripts.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-database"></i> Protection des Données</h4>
+                <p>
+                    Stockage sécurisé des mots de passe et données sensibles.
+                </p>
+            </div>
+        </div>
+
+        <h2>8.2 Optimisations</h2>
+
+        <div class="success-box">
+            <h4>Stratégies d'Optimisation Implémentées</h4>
+            <ul>
+                <li><strong>Pagination côté serveur</strong> : Limitation des données transférées</li>
+                <li><strong>Lazy loading</strong> : Chargement à la demande des composants</li>
+                <li><strong>Cache React Query</strong> : Réduction des appels API redondants</li>
+                <li><strong>Debouncing</strong> : Optimisation des recherches et filtres</li>
+                <li><strong>Gestion des processus</strong> : Utilisation de psutil pour un monitoring efficace</li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>9. COMPÉTENCES ACQUISES</h1>
+
+        <h2>9.1 Apprentissages Techniques</h2>
+
+        <div class="info-box">
+            <h4>Backend & API</h4>
+            <ul>
+                <li>Maîtrise de Django REST Framework et ses patterns avancés</li>
+                <li>Gestion de processus Python avec subprocess et psutil</li>
+                <li>Automatisation navigateur avec Selenium (WebDriver, options, profils, waits) — solide compréhension
+                </li>
+                <li>Implémentation de filtres, pagination et serializers personnalisés</li>
+                <li>Gestion des exceptions et réponses API standardisées</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>Frontend & UI</h4>
+            <ul>
+                <li>Utilisation avancée de Next.js 15 avec App Router</li>
+                <li>Gestion d'état hybride avec Redux Toolkit et React Query</li>
+                <li>Création d'interfaces réactives avec Radix UI et Tailwind</li>
+                <li>TypeScript pour la sécurité des types</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>Outils & Méthodologie</h4>
+            <ul>
+                <li>Git & GitHub : branches, pull requests, revues de code et gestion d'historique</li>
+                <li>Postman : conception de requêtes, collections et tests pour valider les endpoints REST</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>Architecture & Design</h4>
+            <ul>
+                <li>Conception d'architecture monorepo modulaire</li>
+                <li>Modélisation de données relationnelles complexes</li>
+                <li>Patterns de communication frontend-backend efficaces</li>
+                <li>Gestion de tâches asynchrones et monitoring</li>
+            </ul>
+        </div>
+
+        <h2>9.2 Compétences Transversales</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><i class="fas fa-project-diagram"></i> Gestion de Projet</h4>
+                <p>
+                    Planification, développement itératif et livraison d'une solution complète.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-puzzle-piece"></i> Résolution de Problèmes</h4>
+                <p>
+                    Analyse et résolution de défis techniques complexes d'automatisation.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-book"></i> Documentation</h4>
+                <p>
+                    Rédaction de documentation technique claire et structurée.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4><i class="fas fa-rocket"></i> Autonomie</h4>
+                <p>
+                    Développement autonome avec recherche et application de solutions.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h1>10. AMÉLIORATIONS FUTURES</h1>
+
+        <h2>10.1 Évolutions Court Terme</h2>
+        <ol>
+            <li><strong>Tests automatisés</strong> : Ajout de tests unitaires et d'intégration</li>
+            <li><strong>WebSockets</strong> : Streaming temps réel des logs</li>
+            <li><strong>Docker</strong> : Containerisation pour le déploiement</li>
+            <li><strong>CI/CD</strong> : Pipeline de déploiement automatisé</li>
+            <li><strong>Documentation API</strong> : OpenAPI/Swagger avec drf-spectacular</li>
+        </ol>
+
+        <h2>10.2 Évolutions Long Terme</h2>
+        <ol>
+            <li><strong>File de tâches</strong> : Intégration Celery/RQ pour une gestion avancée</li>
+            <li><strong>Multi-tenancy</strong> : Support de plusieurs organisations</li>
+            <li><strong>Analytics</strong> : Tableaux de bord et rapports détaillés</li>
+            <li><strong>API publique</strong> : Exposition d'une API pour intégrations tierces</li>
+            <li><strong>Machine Learning</strong> : Optimisation automatique des scripts</li>
+        </ol>
+
+        <h2>10.3 Améliorations Sécurité</h2>
+
+        <div class="warning-box">
+            <h4>Priorités Sécurité</h4>
+            <ul>
+                <li>Migration complète vers les variables d'environnement</li>
+                <li>Implémentation d'authentification JWT</li>
+                <li>Audit de sécurité et tests de pénétration</li>
+                <li>Chiffrement des données sensibles en base</li>
+                <li>Rate limiting sur les endpoints critiques</li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="conclusion">
+            <h1>CONCLUSION</h1>
+            <p>
+                Le développement de la plateforme Auto Web durant ma période d'intégration représente une réalisation
+                technique significative qui démontre la maîtrise de technologies modernes et la capacité à concevoir des
+                solutions complètes et robustes.
+            </p>
+
+            <p>
+                Ce projet illustre parfaitement l'application pratique de concepts avancés de développement web, depuis
+                l'architecture backend avec Django jusqu'à l'interface utilisateur moderne avec Next.js, en passant par
+                la gestion complexe de processus d'automatisation.
+            </p>
+
+            <p>
+                L'expérience acquise sur ce projet, tant sur le plan technique que méthodologique, constitue une base
+                solide pour aborder des défis futurs dans le domaine du développement d'applications web et de
+                l'automatisation.
+            </p>
+
+            <p><strong>Points clés du projet :</strong></p>
+            <ul>
+                <li>Architecture full-stack moderne et scalable</li>
+                <li>API REST robuste avec Django REST Framework</li>
+                <li>Interface utilisateur réactive avec Next.js et React</li>
+                <li>Système d'automatisation flexible et extensible</li>
+                <li>Gestion efficace des processus et du monitoring</li>
+                <li>Documentation complète et code maintenable</li>
+            </ul>
+
+            <p>
+                <strong>Ce projet démontre non seulement des compétences techniques solides, mais aussi la capacité à
+                    concevoir et implémenter des solutions innovantes répondant à des besoins métier complexes.</strong>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>
+                <strong>Rapport technique réalisé l'évolution stratégique continue de Web Media Network</strong>
+            </p>
+            <p>© 2025 Web Media Network - Document Confidentiel</p>
+        </div>
+    </div>
+</body>
+
+</html>
